@@ -1,4 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { ClassOverview } from "@/components/dashboard/class-overview";
+import { PendingTasks } from "@/components/dashboard/pending-tasks";
+import { RecentActivities } from "@/components/dashboard/recent-activities";
+import { DashboardStats } from "@/components/dashboard/stats";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
@@ -10,13 +14,17 @@ export default function Page() {
         <div className="flex flex-1">
           <AppSidebar />
           <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4">
-              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="container space-y-8 p-8">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <DashboardStats />
               </div>
-              <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <PendingTasks />
+                <RecentActivities />
+              </div>
+
+              <ClassOverview />
             </div>
           </SidebarInset>
         </div>
