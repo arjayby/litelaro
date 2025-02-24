@@ -25,19 +25,23 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
-    const { error } = await signIn(email, password);
-
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const { error } = await signIn(email, password);
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      router.push("/dashboard");
+    } finally {
+      setIsLoading(false);
     }
-
-    router.push("/dashboard");
   }
 
   async function handleGoogleSignIn() {
@@ -141,7 +145,7 @@ export function LoginForm({
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" loading={isLoading}>
                   Login
                 </Button>
               </div>
