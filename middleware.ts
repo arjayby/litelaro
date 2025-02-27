@@ -20,10 +20,25 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Handle authenticated users on public routes
-  if (session && publicRoutes.includes(pathname)) {
-    const redirectUrl = nextUrl || "/dashboard";
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
+  if (session) {
+    const isUserProfileCompleted =
+      !!session.user.user_metadata.is_profile_completed;
+
+    // If no profile and not on complete-profile page, redirect to complete profile
+    if (!isUserProfileCompleted && pathname !== "/complete-profile") {
+      return NextResponse.redirect(new URL("/complete-profile", req.url));
+    }
+
+    // If has profile and trying to access complete-profile, redirect to dashboard
+    if (isUserProfileCompleted && pathname === "/complete-profile") {
+      return NextResponse.redirect(new URL("/profile", req.url));
+    }
+
+    // Handle authenticated users on public routes
+    if (publicRoutes.includes(pathname)) {
+      const redirectUrl = nextUrl || "/dashboard";
+      return NextResponse.redirect(new URL(redirectUrl, req.url));
+    }
   }
 
   // Handle unauthenticated users on private routes
