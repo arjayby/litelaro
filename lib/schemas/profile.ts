@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
+  avatarUrl: z.string().url("Choose an avatar"),
   givenName: z.string().trim().min(1, {
     message: "First name is required",
   }),

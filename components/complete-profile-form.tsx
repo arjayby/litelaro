@@ -4,6 +4,7 @@ import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 
 import { completeProfileAction } from "@/app/complete-profile/actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DEFAULT_AVATARS } from "@/lib/constants";
 import { ProfileFormValues, profileSchema } from "@/lib/schemas/profile";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export function CompleteProfileForm() {
@@ -37,6 +40,7 @@ export function CompleteProfileForm() {
     defaultValues: {
       givenName: "",
       familyName: "",
+      avatarUrl: "",
     },
   });
 
@@ -59,6 +63,38 @@ export function CompleteProfileForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+            <FormField
+              control={form.control}
+              name="avatarUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <div className="grid grid-cols-3 gap-4 md:grid-cols-4">
+                      {DEFAULT_AVATARS.map((url, index) => (
+                        <button
+                          key={url}
+                          type="button"
+                          onClick={() => field.onChange(url)}
+                          className={cn(
+                            "flex items-center justify-center rounded-lg border-2 p-1 hover:border-primary",
+                            field.value === url
+                              ? "border-primary"
+                              : "border-transparent"
+                          )}
+                        >
+                          <Avatar className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
+                            <AvatarImage src={url} />
+                            <AvatarFallback>Avatar {index}</AvatarFallback>
+                          </Avatar>
+                        </button>
+                      ))}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="givenName"
