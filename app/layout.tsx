@@ -1,5 +1,7 @@
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import {
   instrumentSans,
   instrumentSerif,
@@ -7,7 +9,6 @@ import {
 } from "../fonts/fonts";
 
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Litelaro: Gamified Literature Learning for Teachers and Students",
   description:
@@ -25,6 +26,7 @@ export default function RootLayout({
         className={`${instrumentSans.variable} ${instrumentSerif.variable} ${instrumentSerifItalic} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
