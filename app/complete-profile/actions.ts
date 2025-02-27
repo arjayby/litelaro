@@ -1,5 +1,7 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { withAuth } from "@/lib/auth/with-auth";
 import { actionClient } from "@/lib/safe-action";
 import { profileSchema } from "@/lib/schemas/profile";
@@ -19,5 +21,7 @@ export const completeProfileAction = actionClient
       if (error) {
         return { error: error.message };
       }
+
+      redirect("/dashboard");
     });
   });

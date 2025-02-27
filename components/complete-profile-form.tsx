@@ -40,7 +40,7 @@ export function CompleteProfileForm() {
     },
   });
 
-  const { execute, result } = useAction(completeProfileAction);
+  const { execute, result, isExecuting } = useAction(completeProfileAction);
 
   async function onSubmit(data: ProfileFormValues) {
     execute(data);
@@ -121,11 +121,7 @@ export function CompleteProfileForm() {
             {result?.data?.error && (
               <p className="text-sm text-red-500">{result.data.error}</p>
             )}
-            <Button
-              type="submit"
-              className="w-full"
-              loading={form.formState.isSubmitting}
-            >
+            <Button type="submit" className="w-full" loading={isExecuting}>
               Complete Profile
             </Button>
           </form>
