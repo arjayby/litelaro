@@ -7,30 +7,13 @@ import type { NextRequest } from "next/server";
 // Will redirect to /dashboard if user is logged in
 const publicRoutes = ["/", "/login", "/sign-up"];
 
-// Add all public routes here
-const publicPages = [
-  "/terms-of-service",
-  "/privacy-policy",
-  "/data-deletion",
-  ...publicRoutes,
-];
-
 // Add all private routes here
-const validRoutes = [...publicPages, "/dashboard", "/complete-profile", "/404"];
+const privateRoutes = ["/dashboard", "/complete-profile"];
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const pathname = req.nextUrl.pathname;
   const nextUrl = req.nextUrl.searchParams.get("next");
-
-  // Handle 404 before authentication check
-  if (
-    !validRoutes.some(
-      (route) => pathname === route || pathname.startsWith(`${route}/`)
-    )
-  ) {
-    return NextResponse.redirect(new URL("/404", req.url));
-  }
 
   const supabase = createMiddlewareClient({ req, res });
   const {
@@ -39,13 +22,12 @@ export async function middleware(req: NextRequest) {
 
   // Handle authenticated users on public routes
   if (session && publicRoutes.includes(pathname)) {
-    const redirectUrl =
-      nextUrl && validRoutes.includes(nextUrl) ? nextUrl : "/dashboard";
+    const redirectUrl = nextUrl || "/dashboard";
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
 
   // Handle unauthenticated users on private routes
-  if (!session && !publicPages.includes(pathname) && pathname !== "/404") {
+  if (!session && privateRoutes.includes(pathname)) {
     const loginUrl = new URL("/login", req.url);
     if (pathname !== "/login") {
       loginUrl.searchParams.set("next", pathname);
@@ -62,10 +44,10 @@ export const config = {
      * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - favicon.ico and its variations
      * - images (public images)
      * - .svg files
      */
-    "/((?!_next/static|_next/image|favicon.ico|images|.*\\.svg$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.|images|.*\\.svg$).*)",
   ],
 };
