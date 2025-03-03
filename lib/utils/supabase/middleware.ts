@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createServerClient } from "@supabase/ssr";
 
+// Will redirect to /dashboard if user is logged in
+const publicRoutes = ["/", "/login", "/sign-up"];
+
+// Add all private routes here
+const privateRoutes = ["/dashboard", "/complete-profile", "/profile"];
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -40,15 +46,37 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  const pathname = request.nextUrl.pathname;
+
+  if (user) {
+    const nextUrl = request.nextUrl.searchParams.get("next");
+
+    const isUserProfileCompleted = !!user.user_metadata.is_profile_completed;
+
+    // If no profile and not on complete-profile page, redirect to complete profile
+    if (!isUserProfileCompleted && pathname !== "/complete-profile") {
+      return NextResponse.redirect(new URL("/complete-profile", request.url));
+    }
+
+    // If has profile and trying to access complete-profile, redirect to dashboard
+    if (isUserProfileCompleted && pathname === "/complete-profile") {
+      return NextResponse.redirect(new URL("/profile", request.url));
+    }
+
+    // Handle authenticated users on public routes
+    if (publicRoutes.includes(pathname)) {
+      const redirectUrl = nextUrl || "/dashboard";
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
+    }
+  }
+
+  // Handle unauthenticated users on private routes
+  if (!user && privateRoutes.includes(pathname)) {
+    const loginUrl = new URL("/login", request.url);
+    if (pathname !== "/login") {
+      loginUrl.searchParams.set("next", pathname);
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
