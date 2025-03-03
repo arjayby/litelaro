@@ -1,5 +1,9 @@
 import { CompleteProfileForm } from "@/components/complete-profile-form";
 
+import { privatePageMetadata } from "../private-metadata";
+
+export const metadata = privatePageMetadata;
+
 export default async function CompleteProfilePage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">

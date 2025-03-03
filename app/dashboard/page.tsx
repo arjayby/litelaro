@@ -6,6 +6,10 @@ import { DashboardStats } from "@/components/dashboard/stats";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
+import { privatePageMetadata } from "../private-metadata";
+
+export const metadata = privatePageMetadata;
+
 export default function DashboardPage() {
   return (
     <div className="[--header-height:calc(theme(spacing.14))]">

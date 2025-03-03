@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { ProfileForm } from "@/components/profile-form";
 import { createClientServer } from "@/lib/utils/supabase/server";
 
+import { privatePageMetadata } from "../private-metadata";
+
+export const metadata = privatePageMetadata;
+
 export default async function ProfilePage() {
   const supabase = await createClientServer();
 
