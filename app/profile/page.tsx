@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ProfileForm } from "@/components/profile-form";
+import { getProfileById } from "@/lib/queries/profile";
 import { createClientServer } from "@/lib/utils/supabase/server";
 
 import { privatePageMetadata } from "../private-metadata";
@@ -9,11 +10,11 @@ export const metadata = privatePageMetadata;
 
 export default async function ProfilePage() {
   const supabase = await createClientServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .single();
+  const profile = await getProfileById({ supabase }, user!.id);
 
   if (!profile) {
     return notFound();
