@@ -14,9 +14,13 @@ import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { getGreeting } from "@/lib/utils/greeting";
 
-export function SiteHeader() {
+interface SiteHeaderProps {
+  givenName: string;
+}
+
+export function SiteHeader({ givenName }: SiteHeaderProps) {
   const { toggleSidebar } = useSidebar();
-  const greeting = getGreeting("Jeanvive");
+  const greeting = getGreeting(givenName);
 
   return (
     <header className="fle sticky top-0 z-50 w-full items-center border-b bg-background">
