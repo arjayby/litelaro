@@ -9,7 +9,7 @@ import { profileSchema } from "@/lib/schemas/profile";
 export const updateProfileAction = actionClient
   .schema(profileSchema)
   .action(async ({ parsedInput: { givenName, familyName, avatarUrl } }) => {
-    return withAuth(async ({ supabase, session }) => {
+    return withAuth(async ({ supabase, user }) => {
       const { error } = await supabase
         .from("profiles")
         .update({
@@ -18,7 +18,7 @@ export const updateProfileAction = actionClient
           avatar_url: avatarUrl,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", session.user.id);
+        .eq("id", user.id);
 
       if (error) {
         return { error: error.message };

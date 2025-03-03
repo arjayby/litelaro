@@ -1,34 +1,27 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { Database } from "@/lib/database.types";
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/lib/utils/supabase/database.types";
 import { SupabaseClient } from "@supabase/supabase-js";
+
+import { createClientServer } from "../utils/supabase/server";
 
 export async function withAuth<T>(
   action: (client: {
     supabase: SupabaseClient<Database>;
-    session: NonNullable<
-      Awaited<
-        ReturnType<SupabaseClient["auth"]["getSession"]>
-      >["data"]["session"]
+    user: NonNullable<
+      Awaited<ReturnType<SupabaseClient["auth"]["getUser"]>>["data"]["user"]
     >;
   }) => Promise<T>
 ): Promise<T> {
-  const cookieStore = await cookies();
-  const supabase = createServerActionClient<Database>({
-    // @ts-expect-error: cookiestore is not a function
-    cookies: () => cookieStore,
-  });
+  const supabase = await createClientServer();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
-  // @ts-expect-error: supabase is not a function
-  return action({ supabase, session });
+  return action({ supabase, user });
 }

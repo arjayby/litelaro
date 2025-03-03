@@ -1,6 +1,6 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClientBrowser } from "@/lib/utils/supabase/client";
 
-export const supabase = createClientComponentClient();
+const supabase = createClientBrowser();
 
 export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({

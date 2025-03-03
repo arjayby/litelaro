@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { ProfileForm } from "@/components/profile-form";
-import { createServerClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/utils/supabase/server";
 
 export default async function ProfilePage() {
-  const supabase = await createServerClient();
+  const supabase = await createClientServer();
 
   const { data: profile } = await supabase
     .from("profiles")

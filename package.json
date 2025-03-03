@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "load-env": "export $(grep -v '^#' .env.local | xargs)",
-    "supabase-gen-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > lib/database.types.ts"
+    "supabase-gen-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > lib/utils/supabase/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
@@ -24,7 +24,7 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@radix-ui/react-visually-hidden": "^1.1.2",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

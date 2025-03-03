@@ -10,9 +10,9 @@ export const completeProfileAction = actionClient
   .schema(profileSchema)
   .action(
     async ({ parsedInput: { givenName, familyName, role, avatarUrl } }) => {
-      return withAuth(async ({ supabase, session }) => {
+      return withAuth(async ({ supabase, user }) => {
         const { error: profileError } = await supabase.from("profiles").upsert({
-          id: session.user.id,
+          id: user.id,
           given_name: givenName,
           family_name: familyName,
           role: role,
