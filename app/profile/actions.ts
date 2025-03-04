@@ -16,7 +16,6 @@ export const updateProfileAction = actionClient
           given_name: givenName,
           family_name: familyName,
           avatar_url: avatarUrl,
-          updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
 
