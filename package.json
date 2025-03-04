@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "load-env": "export $(grep -v '^#' .env.local | xargs)",
-    "supabase-gen-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > lib/utils/supabase/database.types.ts"
+    "gen-types": "npx supabase gen types typescript --local > lib/utils/supabase/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
