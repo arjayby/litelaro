@@ -1,8 +1,11 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
 
+import { createQuizAction } from "@/app/quizzes/create/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,59 +27,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  quizDifficulty,
+  QuizFormValues,
+  quizSchema,
+  quizType,
+  quizVisibility,
+} from "@/lib/schemas/quiz";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const quizDifficulty = ["easy", "average", "difficult"] as const;
-const quizType = ["subject", "topic", "questions"] as const;
-const quizVisibility = ["public", "invite-only", "only-me"] as const;
-
-const quizSchema = z
-  .object({
-    title: z.string().min(1, "Title is required"),
-    description: z.string().optional(),
-    visibility: z.enum(quizVisibility).default("public"),
-    type: z.enum(quizType, { message: "Type is required" }),
-    difficulty: z.enum(quizDifficulty).optional(),
-    items: z.array(
-      z.object({
-        question: z.string().min(1, "Question is required"),
-        choices: z
-          .array(
-            z.object({
-              text: z.string().min(1, "Choice is required"),
-              isCorrect: z.boolean().default(false),
-            })
-          )
-          .length(4, "Must have exactly 4 choices")
-          .refine(
-            (choices) => {
-              const correctChoices = choices.filter((c) => c.isCorrect);
-              return correctChoices.length === 1;
-            },
-            {
-              message: "Select one correct answer",
-              path: ["choices"],
-            }
-          ),
-      })
-    ),
-  })
-  .refine(
-    (data) => {
-      // if type is questions, then difficulty must be defined
-      if (data.type === "questions" && !data.difficulty) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message: "Difficulty is required",
-      path: ["difficulty"],
-    }
-  );
-
-type QuizFormValues = z.infer<typeof quizSchema>;
 
 interface CreateQuizFormProps {
   currentStep: number;
@@ -87,6 +46,18 @@ export function CreateQuizForm({
   currentStep,
   onStepChange,
 }: CreateQuizFormProps) {
+  const { execute, result, hasSucceeded, isExecuting } =
+    useAction(createQuizAction);
+
+  useEffect(() => {
+    if (hasSucceeded) {
+      toast.success("Quiz created successfully");
+    }
+    if (result.data?.error) {
+      toast.error(result.data.error);
+    }
+  }, [hasSucceeded, result.data?.error]);
+
   const form = useForm<QuizFormValues>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
@@ -133,9 +104,8 @@ export function CreateQuizForm({
     return true;
   }
 
-  function onSubmit(data: QuizFormValues) {
-    console.log("Submit!");
-    console.log(data);
+  async function onSubmit(data: QuizFormValues) {
+    execute(data);
   }
 
   return (
@@ -203,19 +173,19 @@ export function CreateQuizForm({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="public">
+                            <SelectItem value={quizVisibility["0"]}>
                               <div className="flex items-center gap-2">
                                 <span>🌍</span>
                                 <span>Public</span>
                               </div>
                             </SelectItem>
-                            <SelectItem value="invite-only">
+                            <SelectItem value={quizVisibility["1"]}>
                               <div className="flex items-center gap-2">
                                 <span>👥</span>
                                 <span>Invite Only</span>
                               </div>
                             </SelectItem>
-                            <SelectItem value="only-me">
+                            <SelectItem value={quizVisibility["2"]}>
                               <div className="flex items-center gap-2">
                                 <span>🔒</span>
                                 <span>Only Me</span>
@@ -248,7 +218,7 @@ export function CreateQuizForm({
                   render={({ field }) => (
                     <FormItem>
                       <div className="grid gap-4 sm:grid-cols-3">
-                        {["subject", "topic", "questions"].map((type) => (
+                        {quizType.map((type) => (
                           <Card
                             key={type}
                             className={cn(
@@ -462,6 +432,7 @@ export function CreateQuizForm({
                 )}
                 <Button
                   type="button"
+                  loading={isExecuting}
                   onClick={async () => {
                     const isValid = await validateStep(currentStep);
                     if (!isValid) return;

@@ -7,6 +7,31 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       profiles: {
@@ -26,7 +51,7 @@ export type Database = {
           given_name: string
           id: string
           role: string
-          updated_at: string
+          updated_at?: string
         }
         Update: {
           avatar_url?: string | null
@@ -39,6 +64,77 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_items: {
+        Row: {
+          choices: Json
+          created_at: string
+          id: string
+          question: string
+          quiz_id: string
+          updated_at: string
+        }
+        Insert: {
+          choices: Json
+          created_at?: string
+          id?: string
+          question: string
+          quiz_id: string
+          updated_at?: string
+        }
+        Update: {
+          choices?: Json
+          created_at?: string
+          id?: string
+          question?: string
+          quiz_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_items_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty: Database["public"]["Enums"]["quiz_difficulty"] | null
+          id: string
+          title: string
+          type: Database["public"]["Enums"]["quiz_type"]
+          updated_at: string
+          user_id: string
+          visibility: Database["public"]["Enums"]["quiz_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["quiz_difficulty"] | null
+          id?: string
+          title: string
+          type: Database["public"]["Enums"]["quiz_type"]
+          updated_at?: string
+          user_id: string
+          visibility?: Database["public"]["Enums"]["quiz_visibility"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["quiz_difficulty"] | null
+          id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["quiz_type"]
+          updated_at?: string
+          user_id?: string
+          visibility?: Database["public"]["Enums"]["quiz_visibility"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -47,7 +143,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      quiz_difficulty: "easy" | "average" | "difficult"
+      quiz_type: "subject" | "topic" | "questions"
+      quiz_visibility: "public" | "invite-only" | "only-me"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -151,3 +249,4 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
     ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
