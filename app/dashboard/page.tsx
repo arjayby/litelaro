@@ -35,6 +35,7 @@ export default async function DashboardPage() {
             user={{
               avatar: profile.avatar_url ?? "",
               givenName: profile.given_name,
+              familyName: profile.family_name,
               email: user?.email ?? "",
             }}
           />

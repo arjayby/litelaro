@@ -57,6 +57,7 @@ const data = {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: {
     givenName: string;
+    familyName: string;
     email: string;
     avatar: string;
   };

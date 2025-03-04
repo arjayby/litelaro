@@ -20,12 +20,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { signOut } from "@/lib/auth";
+import { getAvatarFallback } from "@/lib/utils/avatar";
 
 export function NavUser({
   user,
 }: {
   user: {
     givenName: string;
+    familyName: string;
     email: string;
     avatar: string;
   };
@@ -51,7 +53,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.givenName} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {getAvatarFallback(user.givenName, user.familyName)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.givenName}</span>

@@ -34,6 +34,7 @@ export default async function QuizzesPage() {
             user={{
               avatar: profile.avatar_url ?? "",
               givenName: profile.given_name,
+              familyName: profile.family_name,
               email: user?.email ?? "",
             }}
           />
