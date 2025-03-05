@@ -1,12 +1,14 @@
-import { PlusIcon } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { QuizList } from "@/components/quiz-list";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getProfileById } from "@/lib/queries/profile";
+import { getQuizzesByUserId } from "@/lib/queries/quiz";
 import { createClientServer } from "@/lib/utils/supabase/server";
 
 import { privatePageMetadata } from "../private-metadata";
@@ -20,6 +22,7 @@ export default async function QuizzesPage() {
   } = await supabase.auth.getUser();
 
   const profile = await getProfileById({ supabase }, user!.id);
+  const quizzes = await getQuizzesByUserId({ supabase }, user!.id);
 
   if (!profile) {
     return notFound();
@@ -48,12 +51,13 @@ export default async function QuizzesPage() {
                   </p>
                 </div>
                 <Link href="/quizzes/create">
-                  <Button size="lg">
-                    <PlusIcon />
+                  <Button variant="ghost" size="lg">
                     Create Quiz
+                    <MoveRight />
                   </Button>
                 </Link>
               </div>
+              <QuizList quizzes={quizzes ?? []} />
             </div>
           </SidebarInset>
         </div>

@@ -35,6 +35,7 @@ import {
   quizVisibility,
 } from "@/lib/schemas/quiz";
 import { cn } from "@/lib/utils";
+import { getQuizEmoji } from "@/lib/utils/quiz-emoji";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface CreateQuizFormProps {
@@ -175,20 +176,32 @@ export function CreateQuizForm({
                           <SelectContent>
                             <SelectItem value={quizVisibility["0"]}>
                               <div className="flex items-center gap-2">
-                                <span>🌍</span>
-                                <span>Public</span>
+                                <span>
+                                  {getQuizEmoji.visibility("public").emoji}
+                                </span>
+                                <span>
+                                  {getQuizEmoji.visibility("public").label}
+                                </span>
                               </div>
                             </SelectItem>
                             <SelectItem value={quizVisibility["1"]}>
                               <div className="flex items-center gap-2">
-                                <span>👥</span>
-                                <span>Invite Only</span>
+                                <span>
+                                  {getQuizEmoji.visibility("invite-only").emoji}
+                                </span>
+                                <span>
+                                  {getQuizEmoji.visibility("invite-only").label}
+                                </span>
                               </div>
                             </SelectItem>
                             <SelectItem value={quizVisibility["2"]}>
                               <div className="flex items-center gap-2">
-                                <span>🔒</span>
-                                <span>Only Me</span>
+                                <span>
+                                  {getQuizEmoji.visibility("only-me").emoji}
+                                </span>
+                                <span>
+                                  {getQuizEmoji.visibility("only-me").label}
+                                </span>
                               </div>
                             </SelectItem>
                           </SelectContent>
@@ -236,7 +249,9 @@ export function CreateQuizForm({
                           >
                             <CardHeader>
                               <CardTitle className="capitalize">
-                                {type}
+                                <span className="flex items-center gap-2">
+                                  {type}
+                                </span>
                               </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -280,12 +295,16 @@ export function CreateQuizForm({
                               >
                                 <CardContent className="p-4 text-center">
                                   <div className="mb-2 flex justify-center">
-                                    {level === "easy" && "🌱"}
-                                    {level === "average" && "🎯"}
-                                    {level === "difficult" && "👑"}
+                                    {level === "easy" &&
+                                      getQuizEmoji.difficulty("easy").emoji}
+                                    {level === "average" &&
+                                      getQuizEmoji.difficulty("average").emoji}
+                                    {level === "difficult" &&
+                                      getQuizEmoji.difficulty("difficult")
+                                        .emoji}
                                   </div>
                                   <p className="font-medium capitalize">
-                                    {level}
+                                    {getQuizEmoji.difficulty(level).label}
                                   </p>
                                   <p className="text-xs text-muted-foreground">
                                     {level === "easy" && "Basic concepts"}
