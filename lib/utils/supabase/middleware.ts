@@ -9,6 +9,8 @@ const publicRoutes = ["/", "/login", "/sign-up"];
 const privateRoutes = [
   "/classrooms",
   "/quizzes",
+  "/motivational-games",
+  "/explore",
   "/complete-profile",
   "/profile",
 ];
