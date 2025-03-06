@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { ClassOverview } from "@/components/dashboard/class-overview";
-import { PendingTasks } from "@/components/dashboard/pending-tasks";
-import { RecentActivities } from "@/components/dashboard/recent-activities";
-import { DashboardStats } from "@/components/dashboard/stats";
+import { EngagementTrends } from "@/components/analytics/engagement-trends";
+import { PerformanceMetrics } from "@/components/analytics/performance-metrics";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getProfileById } from "@/lib/queries/profile";
@@ -14,7 +12,7 @@ import { privatePageMetadata } from "../private-metadata";
 
 export const metadata = privatePageMetadata;
 
-export default async function DashboardPage() {
+export default async function AnalyticsPage() {
   const supabase = await createClientServer();
   const {
     data: { user },
@@ -41,16 +39,17 @@ export default async function DashboardPage() {
           />
           <SidebarInset>
             <div className="container space-y-8 p-8">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                <DashboardStats />
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+                <p className="text-muted-foreground">
+                  Track student performance and engagement metrics
+                </p>
               </div>
 
               <div className="grid gap-6 md:grid-cols-2">
-                <PendingTasks />
-                <RecentActivities />
+                <PerformanceMetrics />
+                <EngagementTrends />
               </div>
-
-              <ClassOverview />
             </div>
           </SidebarInset>
         </div>

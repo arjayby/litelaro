@@ -39,7 +39,7 @@ export const completeProfileAction = actionClient
         // Refresh session to update the metadata
         await supabase.auth.refreshSession();
 
-        redirect("/dashboard");
+        redirect("/classrooms");
       });
     }
   );

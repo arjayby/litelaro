@@ -38,7 +38,7 @@ export function LoginForm({
         setError(error.message);
         return;
       }
-      router.push("/dashboard");
+      router.push("/classrooms");
     } finally {
       setIsLoading(false);
     }

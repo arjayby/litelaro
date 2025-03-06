@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createServerClient } from "@supabase/ssr";
 
-// Will redirect to /dashboard if user is logged in
+// Will redirect to /classrooms if user is logged in
 const publicRoutes = ["/", "/login", "/sign-up"];
 
 // Add all private routes here
-const privateRoutes = ["/dashboard", "/complete-profile", "/profile"];
+const privateRoutes = [
+  "/classrooms",
+  "/quizzes",
+  "/complete-profile",
+  "/profile",
+];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -65,7 +70,7 @@ export async function updateSession(request: NextRequest) {
 
     // Handle authenticated users on public routes
     if (publicRoutes.includes(pathname)) {
-      const redirectUrl = nextUrl || "/dashboard";
+      const redirectUrl = nextUrl || privateRoutes[0];
       return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
   }

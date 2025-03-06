@@ -23,6 +23,6 @@ export const updateProfileAction = actionClient
         return { error: error.message };
       }
 
-      redirect("/dashboard");
+      redirect("/classrooms");
     });
   });

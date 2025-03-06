@@ -1,8 +1,8 @@
 "use client";
 
 import {
+  ChartArea,
   Gamepad2,
-  LayoutDashboard,
   Presentation,
   ScrollText,
   Telescope,
@@ -25,11 +25,6 @@ import {
 const data = {
   mainItems: [
     {
-      name: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
       name: "Classrooms",
       url: "/classrooms",
       icon: Presentation,
@@ -43,6 +38,11 @@ const data = {
       name: "Motivational Games",
       url: "/motivational-games",
       icon: Gamepad2,
+    },
+    {
+      name: "Analytics",
+      url: "/analytics",
+      icon: ChartArea,
     },
   ],
   otherItems: [
