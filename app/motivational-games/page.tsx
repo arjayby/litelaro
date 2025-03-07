@@ -6,16 +6,13 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getAuthSession } from "@/lib/auth/get-auth-session";
 import { getProfileById } from "@/lib/queries/profile";
-import { createClientServer } from "@/lib/utils/supabase/server";
 
 export default async function MotivationalGamesPage() {
-  const supabase = await createClientServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user, supabase } = await getAuthSession();
 
-  const profile = await getProfileById({ supabase }, user!.id);
+  const profile = await getProfileById({ supabase }, user.id);
 
   if (!profile) {
     return notFound();
@@ -31,7 +28,7 @@ export default async function MotivationalGamesPage() {
               avatar: profile.avatar_url ?? "",
               givenName: profile.given_name,
               familyName: profile.family_name,
-              email: user?.email ?? "",
+              email: user.email ?? "",
             }}
           />
           <SidebarInset>

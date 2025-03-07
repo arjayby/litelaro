@@ -7,22 +7,19 @@ import { QuizList } from "@/components/quiz-list";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getAuthSession } from "@/lib/auth/get-auth-session";
 import { getProfileById } from "@/lib/queries/profile";
 import { getQuizzesByUserId } from "@/lib/queries/quiz";
-import { createClientServer } from "@/lib/utils/supabase/server";
 
 import { privatePageMetadata } from "../private-metadata";
 
 export const metadata = privatePageMetadata;
 
 export default async function QuizzesPage() {
-  const supabase = await createClientServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user, supabase } = await getAuthSession();
 
-  const profile = await getProfileById({ supabase }, user!.id);
-  const quizzes = await getQuizzesByUserId({ supabase }, user!.id);
+  const profile = await getProfileById({ supabase }, user.id);
+  const quizzes = await getQuizzesByUserId({ supabase }, user.id);
 
   if (!profile) {
     return notFound();
@@ -38,7 +35,7 @@ export default async function QuizzesPage() {
               avatar: profile.avatar_url ?? "",
               givenName: profile.given_name,
               familyName: profile.family_name,
-              email: user?.email ?? "",
+              email: user.email ?? "",
             }}
           />
           <SidebarInset>
