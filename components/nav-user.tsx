@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, CircleUser, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -91,21 +91,24 @@ export function NavUser({
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push("/profile")}
+              >
+                <CircleUser />
+                Profile
               </DropdownMenuItem>
-              <DropdownMenuItem disabled>
+              {/* <DropdownMenuItem disabled>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <Bell />
                 Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup> */}
+              </DropdownMenuItem> */}
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
