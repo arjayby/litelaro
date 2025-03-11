@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChartArea,
-  Gamepad2,
-  Presentation,
-  ScrollText,
-  Telescope,
-} from "lucide-react";
+import { Gamepad2, Presentation, ScrollText } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
@@ -38,18 +32,6 @@ const data = {
       name: "Motivational Games",
       url: "/motivational-games",
       icon: Gamepad2,
-    },
-    {
-      name: "Analytics",
-      url: "/analytics",
-      icon: ChartArea,
-    },
-  ],
-  otherItems: [
-    {
-      name: "Explore",
-      url: "/explore",
-      icon: Telescope,
     },
   ],
 };
@@ -87,8 +69,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavPrimary title="Main" items={data.mainItems} />
-        <NavPrimary title="Others" items={data.otherItems} />
+        <NavPrimary items={data.mainItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
