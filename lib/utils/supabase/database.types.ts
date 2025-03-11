@@ -34,6 +34,80 @@ export type Database = {
   }
   public: {
     Tables: {
+      game_items: {
+        Row: {
+          answer: string
+          created_at: string
+          game_id: string
+          id: string
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          game_id: string
+          id?: string
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          game_id?: string
+          id?: string
+          question?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_items_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          category: Database["public"]["Enums"]["game_category"]
+          created_at: string
+          description: string | null
+          difficulty: Database["public"]["Enums"]["game_difficulty"]
+          id: string
+          title: string
+          type: Database["public"]["Enums"]["game_type"]
+          updated_at: string
+          user_id: string
+          visibility: Database["public"]["Enums"]["game_visibility"]
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["game_category"]
+          created_at?: string
+          description?: string | null
+          difficulty: Database["public"]["Enums"]["game_difficulty"]
+          id?: string
+          title: string
+          type: Database["public"]["Enums"]["game_type"]
+          updated_at?: string
+          user_id: string
+          visibility?: Database["public"]["Enums"]["game_visibility"]
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["game_category"]
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["game_difficulty"]
+          id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["game_type"]
+          updated_at?: string
+          user_id?: string
+          visibility?: Database["public"]["Enums"]["game_visibility"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -143,6 +217,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      game_category:
+        | "title-of-stories"
+        | "author"
+        | "periods"
+        | "epic"
+        | "music"
+      game_difficulty: "easy" | "average" | "difficult"
+      game_type: "individual" | "group"
+      game_visibility: "public" | "invite-only" | "only-me"
       quiz_difficulty: "easy" | "average" | "difficult"
       quiz_type: "subject" | "topic" | "questions"
       quiz_visibility: "public" | "invite-only" | "only-me"

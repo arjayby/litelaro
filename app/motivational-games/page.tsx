@@ -42,9 +42,9 @@ export default async function MotivationalGamesPage() {
                     Engage with interactive learning activities
                   </p>
                 </div>
-                <Link href="/games/featured">
+                <Link href="/motivational-games/create">
                   <Button variant="ghost" size="lg">
-                    Featured Games
+                    Create Game
                     <MoveRight />
                   </Button>
                 </Link>
