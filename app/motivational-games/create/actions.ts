@@ -42,6 +42,6 @@ export const createGameAction = actionClient
         return { error: itemsError.message };
       }
 
-      redirect("/games");
+      redirect("/motivational-games");
     });
   });

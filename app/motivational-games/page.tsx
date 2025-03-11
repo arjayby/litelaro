@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import { GamesList } from "@/components/games-list";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -13,6 +14,10 @@ export default async function MotivationalGamesPage() {
   const { user, supabase } = await getAuthSession();
 
   const profile = await getProfileById({ supabase }, user.id);
+  const { data: games } = await supabase
+    .from("games")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (!profile) {
     return notFound();
@@ -49,12 +54,7 @@ export default async function MotivationalGamesPage() {
                   </Button>
                 </Link>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {/* Game cards will be added here */}
-                <p className="py-8 text-center text-muted-foreground md:col-span-2 lg:col-span-3">
-                  Games coming soon!
-                </p>
-              </div>
+              <GamesList games={games} />
             </div>
           </SidebarInset>
         </div>
