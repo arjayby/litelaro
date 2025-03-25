@@ -25,7 +25,6 @@ export const createGameAction = actionClient
         .single();
 
       if (gameError) {
-        console.log("game error", gameError);
         return { error: gameError.message };
       }
 
@@ -38,7 +37,6 @@ export const createGameAction = actionClient
       );
 
       if (itemsError) {
-        console.log("items error", itemsError);
         return { error: itemsError.message };
       }
 

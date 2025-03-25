@@ -2,31 +2,26 @@ import { Clock, Users } from "lucide-react";
 import Link from "next/link";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getGameEmoji } from "@/lib/utils/game-emoji";
+import { getQuizEmoji } from "@/lib/utils/quiz-emoji";
+import { Database } from "@/lib/utils/supabase/database.types";
 
-interface GameCardProps {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: "individual" | "group";
-  difficulty: "easy" | "average" | "difficult";
-  category: string;
+type Quiz = Database["public"]["Tables"]["quizzes"]["Row"];
+
+interface QuizCardProps extends Quiz {
   createdAt: Date;
-  totalPlayers?: number;
 }
 
-export function GameCard({
+export function QuizCard({
   id,
   title,
   description,
   type,
   difficulty,
-  category,
+  visibility,
   createdAt,
-  totalPlayers = 0,
-}: GameCardProps) {
+}: QuizCardProps) {
   return (
-    <Link href={`/motivational-games/${id}`}>
+    <Link href={`/quizzes/${id}`}>
       <Card className="transition-colors hover:bg-accent">
         <CardHeader>
           <CardTitle className="line-clamp-1">{title}</CardTitle>
@@ -38,20 +33,16 @@ export function GameCard({
             </p>
             <div className="flex flex-wrap gap-2 text-sm">
               <div className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-secondary-foreground">
-                {type === "individual" ? (
-                  <Users className="h-3 w-3" />
-                ) : (
-                  <Users className="h-3 w-3" />
-                )}
                 <span className="capitalize">{type}</span>
               </div>
               <div className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-secondary-foreground">
-                <span>{getGameEmoji.difficulty(difficulty).emoji}</span>
-                <span className="capitalize">{difficulty}</span>
+                {getQuizEmoji.difficulty(difficulty).emoji}{" "}
+                {getQuizEmoji.difficulty(difficulty).label}
               </div>
               <div className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-secondary-foreground">
-                <span className="capitalize">
-                  {category.replace(/-/g, " ")}
+                <span>
+                  {getQuizEmoji.visibility(visibility).emoji}{" "}
+                  {getQuizEmoji.visibility(visibility).label}
                 </span>
               </div>
             </div>
@@ -68,7 +59,7 @@ export function GameCard({
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-3 w-3" />
-                <span>{totalPlayers}</span>
+                <span>{1}</span>
               </div>
             </div>
           </div>

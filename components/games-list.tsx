@@ -14,12 +14,7 @@ export function GamesList({ games }: GamesListProps) {
         games.map((game) => (
           <GameCard
             key={game.id}
-            id={game.id}
-            title={game.title}
-            description={game.description}
-            type={game.type}
-            difficulty={game.difficulty}
-            category={game.category}
+            {...game}
             createdAt={new Date(game.created_at)}
           />
         ))
