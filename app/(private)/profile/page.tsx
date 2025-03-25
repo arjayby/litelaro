@@ -4,7 +4,7 @@ import { ProfileForm } from "@/components/profile-form";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
 import { getProfileById } from "@/lib/queries/profile";
 
-import { privatePageMetadata } from "../private-metadata";
+import { privatePageMetadata } from "../../private-metadata";
 
 export const metadata = privatePageMetadata;
 

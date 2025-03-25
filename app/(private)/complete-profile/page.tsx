@@ -1,6 +1,6 @@
 import { CompleteProfileForm } from "@/components/complete-profile-form";
 
-import { privatePageMetadata } from "../private-metadata";
+import { privatePageMetadata } from "../../private-metadata";
 
 export const metadata = privatePageMetadata;
 

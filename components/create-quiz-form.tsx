@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createQuizAction } from "@/app/quizzes/create/actions";
+import { createQuizAction } from "@/app/(private)/(teacher)/quizzes/create/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

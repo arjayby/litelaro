@@ -3,7 +3,7 @@
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 
-import { completeProfileAction } from "@/app/complete-profile/actions";
+import { completeProfileAction } from "@/app/(private)/complete-profile/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
