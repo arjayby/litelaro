@@ -6,10 +6,6 @@ import { getProfileById } from "@/lib/queries/profile";
 export default async function Home() {
   const { user, supabase } = await getAuthSession();
 
-  if (!user) {
-    redirect("/auth/signin");
-  }
-
   const profile = await getProfileById({ supabase }, user.id);
 
   if (profile?.role === "teacher") {

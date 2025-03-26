@@ -38,7 +38,11 @@ export function LoginForm({
         setError(error.message);
         return;
       }
-      router.push("/classrooms");
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const nextPath = searchParams.get("next");
+
+      router.push(nextPath || "/classrooms");
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +155,10 @@ export function LoginForm({
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link href="/sign-up" className="underline underline-offset-4">
+                <Link 
+                  href={`/sign-up${window.location.search}`} 
+                  className="underline underline-offset-4"
+                >
                   Sign up
                 </Link>
               </div>
