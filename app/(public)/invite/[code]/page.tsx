@@ -21,7 +21,7 @@ export default async function InvitePage({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
-  const { supabase, user } = await getAuthSession();
+  const { supabase, user } = await getAuthSession(`/invite/${code}`);
 
   const classroom = await getClassroomByCode(supabase, code);
 
