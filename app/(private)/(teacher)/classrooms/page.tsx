@@ -1,9 +1,18 @@
 import { MoveRight } from "lucide-react";
 import Link from "next/link";
 
+import { ClassroomList } from "@/components/classroom-list";
 import { Button } from "@/components/ui/button";
+import { getAuthSession } from "@/lib/auth/get-auth-session";
 
 export default async function ClassroomPage() {
+  const { supabase } = await getAuthSession();
+
+  const { data: classrooms } = await supabase
+    .from("classrooms")
+    .select("*, students:classroom_students(count)")
+    .order("created_at", { ascending: false });
+
   return (
     <div className="container space-y-8 p-8">
       <div className="flex items-center justify-between">
@@ -20,12 +29,7 @@ export default async function ClassroomPage() {
           </Button>
         </Link>
       </div>
-      <div className="grid gap-4">
-        {/* Classroom list will be added here */}
-        <p className="py-8 text-center text-muted-foreground">
-          No classrooms created yet
-        </p>
-      </div>
+      <ClassroomList classrooms={classrooms} />
     </div>
   );
 }
