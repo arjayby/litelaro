@@ -12,7 +12,7 @@ import { getClassroomEmoji } from "@/lib/utils/classroom-emoji";
 export default async function ClassroomPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const { supabase } = await getAuthSession();

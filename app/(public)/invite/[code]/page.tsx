@@ -18,7 +18,7 @@ import { JoinClassroomForm } from "./_components/join-classroom-form";
 export default async function InvitePage({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
   const { supabase, user } = await getAuthSession();

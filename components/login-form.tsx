@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 export function LoginForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div"> & { nextUrl?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -155,8 +155,8 @@ export function LoginForm({
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link 
-                  href={`/sign-up${window.location.search}`} 
+                <Link
+                  href={`/sign-up`}
                   className="underline underline-offset-4"
                 >
                   Sign up
