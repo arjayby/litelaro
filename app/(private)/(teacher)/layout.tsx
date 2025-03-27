@@ -32,7 +32,11 @@ export default async function TeacherLayout({
               email: user.email ?? "",
             }}
           />
-          <SidebarInset>{children}</SidebarInset>
+          <SidebarInset className="flex-1 w-full">
+            <div className="mx-auto max-w-7xl w-full">
+              {children}
+            </div>
+          </SidebarInset>
         </div>
       </SidebarProvider>
     </div>
