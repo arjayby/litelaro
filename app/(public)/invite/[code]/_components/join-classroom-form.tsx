@@ -13,39 +13,41 @@ interface JoinClassroomFormProps {
   classroomId: string;
   visibility: "public" | "invite-only";
   existingMembership: boolean;
+  isTeacher: boolean;
 }
 
 export function JoinClassroomForm({
   classroomId,
   visibility,
   existingMembership,
+  isTeacher,
 }: JoinClassroomFormProps) {
-  const { execute, result, hasSucceeded, isExecuting } =
-    useAction(joinClassroomAction);
+  const { execute, result, isExecuting } = useAction(joinClassroomAction);
 
   useEffect(() => {
-    if (hasSucceeded) {
-      toast.success("Successfully joined classroom");
-    }
     if (result.data?.error) {
       toast.error(result.data.error);
+    } else {
+      toast.success("Successfully joined classroom");
     }
-  }, [hasSucceeded, result.data?.error]);
+  }, [result.data?.error]);
 
   return (
     <CardFooter>
       <Button
         className="w-full"
         onClick={() => execute({ classroomId })}
-        disabled={!!existingMembership}
+        disabled={existingMembership || isTeacher}
         variant={existingMembership ? "outline" : "default"}
         loading={isExecuting}
       >
         {existingMembership
           ? "Already joined"
-          : visibility === "public"
-            ? "Join Now"
-            : "Request to Join"}
+          : isTeacher
+            ? "Only students can join classrooms"
+            : visibility === "public"
+              ? "Join Now"
+              : "Request to Join"}
       </Button>
     </CardFooter>
   );

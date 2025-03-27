@@ -21,6 +21,10 @@ export const joinClassroomAction = actionClient
       return { error: "You must be logged in to join a classroom" };
     }
 
+    if (user.user_metadata.role !== "student") {
+      return { error: "Only students can join classrooms" };
+    }
+
     const { error } = await supabase.from("classroom_students").insert({
       classroom_id: classroomId,
       user_id: user.id,
