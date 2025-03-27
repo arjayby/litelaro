@@ -71,6 +71,15 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        "card-flip": {
+          "0%": { transform: "rotateY(0deg)" },
+          "100%": { transform: "rotateY(180deg)" },
+        },
+      },
+      animation: {
+        "card-flip": "card-flip 0.6s ease-in-out forwards",
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports

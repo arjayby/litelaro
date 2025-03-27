@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Tables } from "@/lib/utils/supabase/database.types";
 
@@ -94,6 +94,67 @@ export function GameBoard({
     setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
   };
 
+  // Create a mapping of card indices to emojis
+  const cardEmojis = useMemo(() => {
+    const emojis = [
+      "🚀",
+      "🎮",
+      "🎯",
+      "🧩",
+      "🎪",
+      "🎨",
+      "🎭",
+      "🎲",
+      "🦄",
+      "🎡",
+      "🎢",
+      "🎠",
+      "🎬",
+      "🎤",
+      "🎧",
+      "🎵",
+      "🎸",
+      "🎹",
+      "🎺",
+      "🎻",
+      "🌈",
+      "⭐",
+      "🔮",
+      "💎",
+      "🧸",
+      "🦊",
+      "🐙",
+      "🦁",
+      "🐳",
+      "🦋",
+      "🍕",
+      "🍦",
+      "🍩",
+      "🍓",
+      "🥑",
+      "🌮",
+      "🍔",
+      "🍟",
+      "🧠",
+      "❤️",
+      "🌟",
+      "🌞",
+      "🌙",
+      "⚡",
+      "🔥",
+      "💧",
+      "🌪️",
+      "🌵",
+      "🌴",
+      "🏝️",
+    ];
+
+    // Shuffle the emojis array to ensure randomness
+    const shuffled = [...emojis].sort(() => Math.random() - 0.5);
+
+    return gameData.game_items.map((_, i) => shuffled[i % shuffled.length]);
+  }, [gameData.game_items]);
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -129,20 +190,55 @@ export function GameBoard({
       </div>
 
       {/* Question Grid */}
-      <div className="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
         {gameData.game_items.map((item, index: number) => (
           <div
             key={index}
-            className={`aspect-square cursor-pointer rounded-lg border-2 ${
-              answeredQuestions.includes(index)
-                ? "border-muted bg-muted/50"
-                : "border-primary bg-card"
-            } flex items-center justify-center text-2xl font-bold transition-all hover:scale-105`}
+            className={`flex aspect-square cursor-pointer items-center justify-center rounded-lg text-3xl font-bold shadow-md transition-all hover:shadow-lg ${
+              answeredQuestions.includes(index) ? "" : "hover:scale-105"
+            } relative`}
             onClick={() =>
               !answeredQuestions.includes(index) && handleCardSelect(index)
             }
+            style={{ perspective: "1000px" }}
           >
-            {answeredQuestions.includes(index) ? "✓" : index + 1}
+            <div
+              className={`h-full w-full rounded-lg border ${
+                answeredQuestions.includes(index)
+                  ? "border-muted"
+                  : "border-primary"
+              } absolute flex items-center justify-center transition-all duration-500 ${
+                selectedCard === index && showQuestion
+                  ? "animate-card-flip"
+                  : ""
+              } bg-card p-2`}
+              style={{
+                backfaceVisibility: "hidden",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              {answeredQuestions.includes(index) ? (
+                "✓"
+              ) : (
+                <>
+                  <span
+                    className={`absolute left-3 top-2 text-2xl font-medium transition-opacity duration-500 ${
+                      selectedCard === index && showQuestion ? "opacity-0" : ""
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="text-3xl">{cardEmojis[index]}</span>
+                  <span
+                    className={`absolute bottom-2 right-3 rotate-180 text-2xl font-medium transition-opacity duration-500 ${
+                      selectedCard === index && showQuestion ? "opacity-0" : ""
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -194,7 +290,11 @@ export function GameBoard({
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={nextTurn}>Next Turn</Button>
+                <Button onClick={nextTurn}>
+                  {answeredQuestions.length + 1 >= gameData.game_items.length
+                    ? "Finish Game"
+                    : "Next Turn"}
+                </Button>
               </DialogFooter>
             </>
           )}
