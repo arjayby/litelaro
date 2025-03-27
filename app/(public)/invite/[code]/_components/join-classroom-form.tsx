@@ -22,15 +22,18 @@ export function JoinClassroomForm({
   existingMembership,
   isTeacher,
 }: JoinClassroomFormProps) {
-  const { execute, result, isExecuting } = useAction(joinClassroomAction);
+  const { execute, result, hasSucceeded, isExecuting } =
+    useAction(joinClassroomAction);
 
   useEffect(() => {
+    if (!hasSucceeded) return;
+
     if (result.data?.error) {
       toast.error(result.data.error);
     } else {
       toast.success("Successfully joined classroom");
     }
-  }, [result.data?.error]);
+  }, [hasSucceeded, result.data?.error]);
 
   return (
     <CardFooter>

@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 export function LoginForm({
   className,
+  nextUrl,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & { nextUrl?: string }) {
   const router = useRouter();
@@ -42,7 +43,7 @@ export function LoginForm({
       const searchParams = new URLSearchParams(window.location.search);
       const nextPath = searchParams.get("next");
 
-      router.push(nextPath || "/classrooms");
+      router.push(nextUrl || nextPath || "/classrooms");
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +157,7 @@ export function LoginForm({
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
                 <Link
-                  href={`/sign-up`}
+                  href={`/sign-up` + (nextUrl ? `?next=${nextUrl}` : "")}
                   className="underline underline-offset-4"
                 >
                   Sign up

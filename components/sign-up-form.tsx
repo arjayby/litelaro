@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -28,8 +29,10 @@ import { cn } from "@/lib/utils";
 
 export function SignUpForm({
   className,
+  nextUrl,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & { nextUrl?: string }) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -156,7 +159,7 @@ export function SignUpForm({
                 <div className="text-center text-sm">
                   Already have an account?{" "}
                   <Link
-                    href={`/login${window.location.search}`}
+                    href={`/login` + (nextUrl ? `?next=${nextUrl}` : "")}
                     className="underline underline-offset-4"
                   >
                     Login
@@ -191,7 +194,9 @@ export function SignUpForm({
           <AlertDialogFooter>
             <AlertDialogCancel>Close</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => (window.location.href = "/login")}
+              onClick={() =>
+                router.push(`/login` + (nextUrl ? `?next=${nextUrl}` : ""))
+              }
             >
               Go to login
             </AlertDialogAction>
