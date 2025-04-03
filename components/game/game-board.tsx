@@ -22,6 +22,7 @@ export function GameBoard({
   players,
   setPlayers,
   onGameFinish,
+  gameMode,
 }: {
   gameData: Tables<"games"> & {
     game_items: Tables<"game_items">[];
@@ -31,6 +32,7 @@ export function GameBoard({
     React.SetStateAction<{ name: string; score: number }[]>
   >;
   onGameFinish: () => void;
+  gameMode: "standard" | "random-redistribution";
 }) {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
@@ -62,15 +64,33 @@ export function GameBoard({
     setIsCorrect(correct);
     setShowResult(true);
 
-    // Only add 1 point when correct - using a more direct approach
+    // Get points for the question (default to 1 if not specified)
+    const pointsForQuestion = question.points || 1;
+
+    const newPlayers = [...players];
+
     if (correct) {
-      const newPlayers = [...players];
+      // Add points to current player when correct
       newPlayers[currentPlayerIndex] = {
         ...newPlayers[currentPlayerIndex],
-        score: newPlayers[currentPlayerIndex].score + 1,
+        score: newPlayers[currentPlayerIndex].score + pointsForQuestion,
       };
-      setPlayers(newPlayers);
+    } else if (gameMode === "random-redistribution" && players.length > 1) {
+      // In random redistribution mode, give points to a random opponent
+      // Generate random player index that is not the current player
+      let randomPlayerIndex;
+      do {
+        randomPlayerIndex = Math.floor(Math.random() * players.length);
+      } while (randomPlayerIndex === currentPlayerIndex);
+
+      // Add points to the random player
+      newPlayers[randomPlayerIndex] = {
+        ...newPlayers[randomPlayerIndex],
+        score: newPlayers[randomPlayerIndex].score + pointsForQuestion,
+      };
     }
+
+    setPlayers(newPlayers);
   };
 
   // Next turn
@@ -247,8 +267,10 @@ export function GameBoard({
       <Dialog open={showQuestion} onOpenChange={setShowQuestion}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              Question {selectedCard !== null ? selectedCard + 1 : ""}
+            <DialogTitle className="flex items-center justify-between">
+              <span>
+                Question {selectedCard !== null ? selectedCard + 1 : ""}
+              </span>
             </DialogTitle>
             <DialogDescription>
               {selectedCard !== null &&
@@ -266,6 +288,14 @@ export function GameBoard({
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Type your answer here"
                 />
+                {selectedCard !== null && (
+                  <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Points:{" "}
+                    <span className="font-bold">
+                      {gameData.game_items[selectedCard].points || 1}
+                    </span>
+                  </span>
+                )}
               </div>
               <DialogFooter>
                 <Button onClick={submitAnswer}>Submit Answer</Button>
@@ -287,6 +317,31 @@ export function GameBoard({
                         gameData.game_items[selectedCard].answer}
                     </span>
                   </p>
+                  {selectedCard !== null && (
+                    <p className="mt-2 text-sm">
+                      {isCorrect ? (
+                        `${players[currentPlayerIndex].name} earned `
+                      ) : gameMode === "random-redistribution" &&
+                        players.length > 1 ? (
+                        <span>
+                          <span className="font-bold">
+                            {gameData.game_items[selectedCard].points || 1}
+                          </span>
+                          {` ${(gameData.game_items[selectedCard].points || 1) === 1 ? "point" : "points"} were randomly given to an opponent!`}
+                        </span>
+                      ) : (
+                        "No points awarded."
+                      )}
+                      {isCorrect && (
+                        <span>
+                          <span className="font-bold">
+                            {gameData.game_items[selectedCard].points || 1}
+                          </span>
+                          {` ${(gameData.game_items[selectedCard].points || 1) === 1 ? "point" : "points"}!`}
+                        </span>
+                      )}
+                    </p>
+                  )}
                 </div>
               </div>
               <DialogFooter>

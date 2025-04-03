@@ -67,13 +67,16 @@ export function CreateGameForm({
       type: undefined,
       difficulty: undefined,
       category: undefined,
-      items: [{ question: "", answer: "" }],
+      items: [{ question: "", answer: "", points: 1 }],
     },
   });
 
   function addItem() {
     const currentItems = form.getValues("items") || [];
-    form.setValue("items", [...currentItems, { question: "", answer: "" }]);
+    form.setValue("items", [
+      ...currentItems,
+      { question: "", answer: "", points: 1 },
+    ]);
   }
 
   async function validateStep(step: number) {
@@ -345,25 +348,47 @@ export function CreateGameForm({
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.answer`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Answer</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="grid grid-cols-4 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.answer`}
+                        render={({ field }) => (
+                          <FormItem className="col-span-3">
+                            <FormLabel>Answer</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.points`}
+                        render={({ field }) => (
+                          <FormItem className="col-span-1">
+                            <FormLabel>Points</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min=""
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value) || 1)
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Update validation function */}
+            {/* Step 3: Review */}
             {currentStep === 3 && (
               <div className="space-y-6">
                 {form.watch("items").map((_, index) => (
@@ -381,19 +406,41 @@ export function CreateGameForm({
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.answer`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Answer</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="grid grid-cols-4 gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.answer`}
+                        render={({ field }) => (
+                          <FormItem className="col-span-3">
+                            <FormLabel>Answer</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.points`}
+                        render={({ field }) => (
+                          <FormItem className="col-span-1">
+                            <FormLabel>Points</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value) || 1)
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

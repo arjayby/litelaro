@@ -9,6 +9,8 @@ import { GameBoard } from "./game-board";
 import { GameResults } from "./game-results";
 import { GameSetup } from "./game-setup";
 
+type GameMode = "standard" | "random-redistribution";
+
 interface GamePlayProps {
   game: Tables<"games"> & {
     game_items: Tables<"game_items">[];
@@ -20,6 +22,7 @@ export function GamePlay({ game }: GamePlayProps) {
   const [gameState, setGameState] = useState<"setup" | "playing" | "finished">(
     "setup"
   );
+  const [gameMode, setGameMode] = useState<GameMode>("standard");
   const [players, setPlayers] = useState<{ name: string; score: number }[]>([
     { name: "", score: 0 },
   ]);
@@ -52,6 +55,8 @@ export function GamePlay({ game }: GamePlayProps) {
           updatePlayerName={updatePlayerName}
           startGame={startGame}
           gameId={game.id}
+          gameMode={gameMode}
+          setGameMode={setGameMode}
         />
       )}
 
@@ -61,6 +66,7 @@ export function GamePlay({ game }: GamePlayProps) {
           players={players}
           setPlayers={setPlayers}
           onGameFinish={() => setGameState("finished")}
+          gameMode={gameMode}
         />
       )}
 

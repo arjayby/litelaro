@@ -33,6 +33,7 @@ export const createGameAction = actionClient
           game_id: game.id,
           question: item.question,
           answer: item.answer,
+          points: item.points,
         }))
       );
 
