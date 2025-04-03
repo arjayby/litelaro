@@ -6,10 +6,12 @@ export function GameResults({
   players,
   onPlayAgain,
   onExit,
+  gameMode,
 }: {
   players: { name: string; score: number }[];
   onPlayAgain: () => void;
   onExit: () => void;
+  gameMode: "standard" | "random-redistribution";
 }) {
   // Sort players by score (descending)
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
@@ -31,6 +33,10 @@ export function GameResults({
   return (
     <div className="mx-auto max-w-md space-y-8">
       <h1 className="text-center text-3xl font-bold">Game Results</h1>
+      <p className="mb-4 text-center text-muted-foreground">
+        Game Mode:{" "}
+        {gameMode === "standard" ? "Standard" : "Random Redistribution"}
+      </p>
 
       <div className="rounded-lg border p-6">
         <h2 className="mb-4 text-xl font-semibold">Leaderboard</h2>

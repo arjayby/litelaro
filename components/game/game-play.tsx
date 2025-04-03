@@ -37,6 +37,13 @@ export function GamePlay({ game }: GamePlayProps) {
     setPlayers(newPlayers);
   };
 
+  const removePlayer = (index: number) => {
+    if (players.length <= 1) return; // Ensure at least one player remains
+    const newPlayers = [...players];
+    newPlayers.splice(index, 1);
+    setPlayers(newPlayers);
+  };
+
   const startGame = () => {
     if (players.some((player) => !player.name.trim())) {
       alert("All players must have names");
@@ -53,6 +60,7 @@ export function GamePlay({ game }: GamePlayProps) {
           players={players}
           addPlayer={addPlayer}
           updatePlayerName={updatePlayerName}
+          removePlayer={removePlayer}
           startGame={startGame}
           gameId={game.id}
           gameMode={gameMode}
@@ -78,6 +86,7 @@ export function GamePlay({ game }: GamePlayProps) {
             setGameState("playing");
           }}
           onExit={() => router.push(`/motivational-games/${game.id}`)}
+          gameMode={gameMode}
         />
       )}
     </div>

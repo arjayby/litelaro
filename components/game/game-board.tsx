@@ -41,6 +41,9 @@ export function GameBoard({
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
+  const [receivingPlayerIndex, setReceivingPlayerIndex] = useState<
+    number | null
+  >(null);
 
   // Handle card selection
   const handleCardSelect = (index: number) => {
@@ -69,6 +72,9 @@ export function GameBoard({
 
     const newPlayers = [...players];
 
+    // Reset the receiving player index
+    setReceivingPlayerIndex(null);
+
     if (correct) {
       // Add points to current player when correct
       newPlayers[currentPlayerIndex] = {
@@ -88,6 +94,9 @@ export function GameBoard({
         ...newPlayers[randomPlayerIndex],
         score: newPlayers[randomPlayerIndex].score + pointsForQuestion,
       };
+
+      // Store the player who received the points
+      setReceivingPlayerIndex(randomPlayerIndex);
     }
 
     setPlayers(newPlayers);
@@ -179,6 +188,13 @@ export function GameBoard({
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{gameData.title}</h1>
+        <div className="text-center text-lg font-medium">
+          <span className="rounded-full bg-secondary px-4 py-2 text-secondary-foreground">
+            {gameMode === "standard"
+              ? "Standard Mode"
+              : "Random Redistribution Mode"}
+          </span>
+        </div>
         <div className="text-lg font-medium">
           Current Turn:{" "}
           <span className="text-primary">
@@ -214,13 +230,13 @@ export function GameBoard({
         {gameData.game_items.map((item, index: number) => (
           <div
             key={index}
-            className={`flex aspect-square cursor-pointer items-center justify-center rounded-lg text-3xl font-bold shadow-md transition-all hover:shadow-lg ${
+            className={`flex cursor-pointer items-center justify-center rounded-lg text-3xl font-bold shadow-md transition-all hover:shadow-lg ${
               answeredQuestions.includes(index) ? "" : "hover:scale-105"
             } relative`}
             onClick={() =>
               !answeredQuestions.includes(index) && handleCardSelect(index)
             }
-            style={{ perspective: "1000px" }}
+            style={{ perspective: "1000px", aspectRatio: "2/3" }}
           >
             <div
               className={`h-full w-full rounded-lg border ${
@@ -231,10 +247,15 @@ export function GameBoard({
                 selectedCard === index && showQuestion
                   ? "animate-card-flip"
                   : ""
-              } bg-card p-2`}
+              } bg-card p-2 shadow-md`}
               style={{
                 backfaceVisibility: "hidden",
                 transformStyle: "preserve-3d",
+                borderRadius: "12px",
+                border: "2px solid rgba(255,255,255,0.2)",
+                backgroundImage: answeredQuestions.includes(index)
+                  ? "none"
+                  : "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.3) 5%, transparent 60%)",
               }}
             >
               {answeredQuestions.includes(index) ? (
@@ -327,7 +348,7 @@ export function GameBoard({
                           <span className="font-bold">
                             {gameData.game_items[selectedCard].points || 1}
                           </span>
-                          {` ${(gameData.game_items[selectedCard].points || 1) === 1 ? "point" : "points"} were randomly given to an opponent!`}
+                          {` ${(gameData.game_items[selectedCard].points || 1) === 1 ? "point" : "points"} were randomly given to ${receivingPlayerIndex !== null ? players[receivingPlayerIndex].name : "an opponent"}!`}
                         </span>
                       ) : (
                         "No points awarded."
