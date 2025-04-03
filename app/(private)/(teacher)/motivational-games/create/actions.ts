@@ -34,6 +34,7 @@ export const createGameAction = actionClient
           question: item.question,
           answer: item.answer,
           points: item.points,
+          time_limit: item.time_limit,
         }))
       );
 

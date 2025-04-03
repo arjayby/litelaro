@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Tables } from "@/lib/utils/supabase/database.types";
 
@@ -44,6 +44,9 @@ export function GameBoard({
   const [receivingPlayerIndex, setReceivingPlayerIndex] = useState<
     number | null
   >(null);
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+  const [timeLimitInterval, settimeLimitInterval] =
+    useState<NodeJS.Timeout | null>(null);
 
   // Handle card selection
   const handleCardSelect = (index: number) => {
@@ -51,11 +54,59 @@ export function GameBoard({
 
     setSelectedCard(index);
     setShowQuestion(true);
+
+    // Start time limit if question has a time limit set
+    const questionTimeLimit = gameData.game_items[index].time_limit;
+    if (questionTimeLimit) {
+      setTimeRemaining(questionTimeLimit);
+    } else {
+      setTimeRemaining(null);
+    }
   };
+
+  // Clear time limit when component unmounts or when answer is submitted
+  const cleartimeLimit = () => {
+    if (timeLimitInterval) {
+      clearInterval(timeLimitInterval);
+      settimeLimitInterval(null);
+    }
+    setTimeRemaining(null);
+  };
+
+  // Start countdown time limit
+  useEffect(() => {
+    if (timeRemaining !== null && timeRemaining > 0 && !showResult) {
+      const interval = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev === null || prev <= 1) {
+            clearInterval(interval);
+            // Auto-submit when time limit reaches 0, but use setTimeout to avoid state updates during render
+            if (selectedCard !== null && !showResult) {
+              setTimeout(() => {
+                submitAnswer();
+              }, 0);
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      settimeLimitInterval(interval);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRemaining, showResult]);
 
   // Submit answer
   const submitAnswer = () => {
     if (selectedCard === null) return;
+
+    // Clear any active time limit
+    cleartimeLimit();
 
     const question = gameData.game_items[selectedCard];
     if (!question) return;
@@ -107,6 +158,9 @@ export function GameBoard({
     if (selectedCard !== null) {
       setAnsweredQuestions([...answeredQuestions, selectedCard]);
     }
+
+    // Clear time limit
+    cleartimeLimit();
 
     setSelectedCard(null);
     setShowQuestion(false);
@@ -292,6 +346,13 @@ export function GameBoard({
               <span>
                 Question {selectedCard !== null ? selectedCard + 1 : ""}
               </span>
+              {timeRemaining !== null && (
+                <span
+                  className={`rounded-full px-3 py-1 text-sm font-medium ${timeRemaining <= 5 ? "bg-red-100 text-red-800" : "bg-blue-100 text-blue-800"}`}
+                >
+                  {timeRemaining}s
+                </span>
+              )}
             </DialogTitle>
             <DialogDescription>
               {selectedCard !== null &&

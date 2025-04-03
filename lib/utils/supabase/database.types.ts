@@ -122,6 +122,7 @@ export type Database = {
           id: string
           points: number
           question: string
+          time_limit: number | null
           updated_at: string
         }
         Insert: {
@@ -131,6 +132,7 @@ export type Database = {
           id?: string
           points?: number
           question: string
+          time_limit?: number | null
           updated_at?: string
         }
         Update: {
@@ -140,6 +142,7 @@ export type Database = {
           id?: string
           points?: number
           question?: string
+          time_limit?: number | null
           updated_at?: string
         }
         Relationships: [
