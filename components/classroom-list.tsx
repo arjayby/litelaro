@@ -7,9 +7,10 @@ type Classroom = Database["public"]["Tables"]["classrooms"]["Row"] & {
 
 interface ClassroomListProps {
   classrooms: Classroom[] | null;
+  role: "student" | "teacher";
 }
 
-export function ClassroomList({ classrooms }: ClassroomListProps) {
+export function ClassroomList({ classrooms, role }: ClassroomListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {classrooms && classrooms.length > 0 ? (
@@ -23,6 +24,7 @@ export function ClassroomList({ classrooms }: ClassroomListProps) {
             code={classroom.code}
             studentCount={classroom.students[0]?.count ?? 0}
             createdAt={new Date(classroom.created_at)}
+            role={role}
           />
         ))
       ) : (

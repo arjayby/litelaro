@@ -1,6 +1,6 @@
 "use client";
 
-import { Gamepad2, Presentation, ScrollText } from "lucide-react";
+import { Gamepad2, LucideIcon, Presentation, ScrollText } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
@@ -16,26 +16,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const data = {
-  mainItems: [
-    {
-      name: "Classrooms",
-      url: "/classrooms",
-      icon: Presentation,
-    },
-    {
-      name: "Quizzes",
-      url: "/quizzes",
-      icon: ScrollText,
-    },
-    {
-      name: "Motivational Games",
-      url: "/motivational-games",
-      icon: Gamepad2,
-    },
-  ],
-};
-
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: {
     givenName: string;
@@ -43,9 +23,20 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     email: string;
     avatar: string;
   };
+  menuItems: {
+    name: string;
+    url: string;
+    icon: string;
+  }[];
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+const iconMap: Record<string, LucideIcon> = {
+  Presentation,
+  ScrollText,
+  Gamepad2,
+};
+
+export function AppSidebar({ user, menuItems, ...props }: AppSidebarProps) {
   return (
     <Sidebar
       className="top-[--header-height] !h-[calc(100svh-var(--header-height))]"
@@ -69,7 +60,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavPrimary items={data.mainItems} />
+        <NavPrimary
+          items={menuItems.map((item) => {
+            const Icon = iconMap[item.icon];
+            return {
+              name: item.name,
+              url: item.url,
+              icon: Icon,
+            };
+          })}
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

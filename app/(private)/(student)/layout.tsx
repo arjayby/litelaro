@@ -1,29 +1,56 @@
 import { redirect } from "next/navigation";
 
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
-
-// import { StudentSidebar } from "@/components/student/sidebar";
+import { getProfileById } from "@/lib/queries/profile";
 
 export default async function StudentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const menuItems = [
+    {
+      name: "Classrooms",
+      url: "/dashboard/classrooms",
+      icon: "Presentation",
+    },
+    {
+      name: "Quizzes",
+      url: "/dashboard/quizzes",
+      icon: "ScrollText",
+    },
+  ];
+
   const { user, supabase } = await getAuthSession();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+
+  const profile = await getProfileById({ supabase }, user.id);
 
   if (profile?.role !== "student") {
     redirect("/classrooms");
   }
 
   return (
-    <div className="flex flex-1">
-      {/* <StudentSidebar /> */}
-      <main className="flex-1">{children}</main>
+    <div className="[--header-height:calc(theme(spacing.14))]">
+      <SidebarProvider className="flex flex-col">
+        <SiteHeader givenName={profile.given_name} />
+        <div className="flex flex-1">
+          <AppSidebar
+            user={{
+              avatar: profile.avatar_url ?? "",
+              givenName: profile.given_name,
+              familyName: profile.family_name,
+              email: user.email ?? "",
+            }}
+            menuItems={menuItems}
+          />
+          <SidebarInset className="w-full flex-1">
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
     </div>
   );
 }

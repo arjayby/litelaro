@@ -6,6 +6,24 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
 import { getProfileById } from "@/lib/queries/profile";
 
+const menuItems = [
+  {
+    name: "Classrooms",
+    url: "/classrooms",
+    icon: "Presentation",
+  },
+  {
+    name: "Quizzes",
+    url: "/quizzes",
+    icon: "ScrollText",
+  },
+  {
+    name: "Motivational Games",
+    url: "/motivational-games",
+    icon: "Gamepad2",
+  },
+];
+
 export default async function TeacherLayout({
   children,
 }: {
@@ -16,7 +34,7 @@ export default async function TeacherLayout({
   const profile = await getProfileById({ supabase }, user.id);
 
   if (profile?.role !== "teacher") {
-    redirect("/dashboard");
+    redirect("/dashboard/classrooms");
   }
 
   return (
@@ -31,11 +49,10 @@ export default async function TeacherLayout({
               familyName: profile.family_name,
               email: user.email ?? "",
             }}
+            menuItems={menuItems}
           />
-          <SidebarInset className="flex-1 w-full">
-            <div className="mx-auto max-w-7xl w-full">
-              {children}
-            </div>
+          <SidebarInset className="w-full flex-1">
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
           </SidebarInset>
         </div>
       </SidebarProvider>

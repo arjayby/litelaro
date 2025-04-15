@@ -29,7 +29,7 @@ export default async function ClassroomPage() {
           </Button>
         </Link>
       </div>
-      <ClassroomList classrooms={classrooms} />
+      <ClassroomList classrooms={classrooms} role="teacher" />
     </div>
   );
 }

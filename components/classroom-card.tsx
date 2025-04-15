@@ -13,6 +13,7 @@ interface ClassroomCardProps {
   code: string;
   studentCount: number;
   createdAt: Date;
+  role: "student" | "teacher";
 }
 
 export function ClassroomCard({
@@ -23,9 +24,14 @@ export function ClassroomCard({
   code,
   studentCount,
   createdAt,
+  role,
 }: ClassroomCardProps) {
   return (
-    <Link href={`/classrooms/${id}`}>
+    <Link
+      href={
+        role === "teacher" ? `/classrooms/${id}` : `/dashboard/classrooms/${id}`
+      }
+    >
       <Card className="transition-colors hover:bg-accent">
         <CardHeader>
           <CardTitle className="line-clamp-1 space-x-2">
