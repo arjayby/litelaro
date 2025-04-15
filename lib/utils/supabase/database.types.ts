@@ -34,6 +34,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      classroom_quizzes: {
+        Row: {
+          assigned_at: string
+          classroom_id: string
+          id: string
+          quiz_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          classroom_id: string
+          id?: string
+          quiz_id: string
+        }
+        Update: {
+          assigned_at?: string
+          classroom_id?: string
+          id?: string
+          quiz_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_quizzes_classroom_id_fkey"
+            columns: ["classroom_id"]
+            isOneToOne: false
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classroom_quizzes_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classroom_students: {
         Row: {
           classroom_id: string
@@ -301,9 +337,7 @@ export type Database = {
     }
     Functions: {
       get_user_role: {
-        Args: {
-          user_id: string
-        }
+        Args: { user_id: string }
         Returns: string
       }
     }

@@ -113,7 +113,6 @@ export function CreateQuizForm({
     }
   }
 
-  console.log(form.getValues());
   async function validateStep(step: number) {
     if (step === 0) {
       const result = await form.trigger("title");

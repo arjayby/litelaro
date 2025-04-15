@@ -2,12 +2,14 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AssignQuizDialog } from "@/components/assign-quiz-dialog";
 import { CopyClassroomInvite } from "@/components/copy-classroom-invite";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
 import { getClassroomById } from "@/lib/queries/classroom";
 import { getClassroomEmoji } from "@/lib/utils/classroom-emoji";
+import { getClassroomQuizzes } from "@/lib/queries/classroom-quiz";
 
 export default async function ClassroomPage({
   params,
@@ -19,10 +21,11 @@ export default async function ClassroomPage({
 
   const classroom = await getClassroomById(supabase, id);
 
-  console.log(classroom);
   if (!classroom) {
     notFound();
   }
+
+  const assignedQuizzes = await getClassroomQuizzes(supabase, id);
 
   return (
     <div className="container space-y-8 p-8">
@@ -82,6 +85,37 @@ export default async function ClassroomPage({
       </div>
 
       <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium">Quizzes</h2>
+          <AssignQuizDialog classroomId={id} />
+        </div>
+
+        {assignedQuizzes && assignedQuizzes.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {assignedQuizzes.map((assignment) => (
+              <div
+                key={assignment.id}
+                className="flex flex-col gap-2 rounded-lg border p-4"
+              >
+                <h3 className="font-medium">{assignment.quiz.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {assignment.quiz.description || "No description provided"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Assigned on{" "}
+                  {new Date(assignment.assigned_at).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border p-8 text-center">
+            <p className="text-muted-foreground">
+              No quizzes have been assigned yet
+            </p>
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-medium">Students</h2>
           <p className="text-sm text-muted-foreground">

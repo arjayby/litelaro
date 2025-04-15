@@ -72,7 +72,7 @@ export default async function InvitePage({
             classroomId={classroom.id}
             visibility={classroom.visibility}
             existingMembership={!!existingMembership}
-            isTeacher={!!user.user_metadata.role}
+            isTeacher={user.user_metadata.role === "teacher"}
           />
         </Card>
       </div>
