@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -70,7 +71,10 @@ export function CreateQuizForm({
       items: [
         {
           question: "",
-          choices: Array(4).fill({ text: "", isCorrect: false }),
+          choices: Array.from({ length: 4 }, () => ({
+            text: "",
+            isCorrect: false,
+          })),
         },
       ],
     },
@@ -82,11 +86,34 @@ export function CreateQuizForm({
       ...currentItems,
       {
         question: "",
-        choices: Array(4).fill({ text: "", isCorrect: false }),
+        choices: Array.from({ length: 4 }, () => ({
+          text: "",
+          isCorrect: false,
+        })),
       },
     ]);
   }
 
+  function removeItem(index: number) {
+    const currentItems = form.getValues("items") || [];
+    if (currentItems.length > 1) {
+      const updatedItems = [...currentItems];
+      updatedItems.splice(index, 1);
+      form.setValue("items", updatedItems);
+
+      updatedItems.forEach((item, idx) => {
+        item.choices.forEach((choice, choiceIdx) => {
+          form.setValue(
+            `items.${idx}.choices.${choiceIdx}.isCorrect`,
+            choice.isCorrect
+          );
+          form.setValue(`items.${idx}.choices.${choiceIdx}.text`, choice.text);
+        });
+      });
+    }
+  }
+
+  console.log(form.getValues());
   async function validateStep(step: number) {
     if (step === 0) {
       const result = await form.trigger("title");
@@ -333,99 +360,113 @@ export function CreateQuizForm({
                   {form.watch("items").map((_, index) => (
                     <div
                       key={`items.${index}`}
-                      className="space-y-4 rounded-lg border p-4"
+                      className="relative rounded-lg border p-4"
                     >
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.question`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Question {index + 1}</FormLabel>
-                            <FormControl>
-                              <Textarea {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="space-y-3">
-                        <FormLabel>Choices</FormLabel>
+                      {form.watch("items").length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-2 top-2"
+                          onClick={() => removeItem(index)}
+                          title="Delete question"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <div className="space-y-4">
                         <FormField
                           control={form.control}
-                          name={`items.${index}.choices`}
-                          render={() => (
+                          name={`items.${index}.question`}
+                          render={({ field }) => (
                             <FormItem>
-                              <RadioGroup
-                                name={`items.${index}.choices`}
-                                value={form
-                                  .watch(`items.${index}.choices`)
-                                  ?.findIndex((c) => c?.isCorrect)
-                                  ?.toString()}
-                                onValueChange={(value) => {
-                                  [0, 1, 2, 3].forEach((i) => {
-                                    form.setValue(
-                                      `items.${index}.choices.${i}.isCorrect`,
-                                      i === parseInt(value)
-                                    );
-                                  });
-                                  // Clear the choices error when a correct answer is selected
-                                  form.clearErrors(`items.${index}.choices`);
-                                }}
-                              >
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                  {[0, 1, 2, 3].map((choiceIndex) => (
-                                    <div
-                                      key={`choice.${choiceIndex}`}
-                                      className="flex items-center gap-2"
-                                    >
-                                      <FormField
-                                        control={form.control}
-                                        name={`items.${index}.choices.${choiceIndex}.text`}
-                                        render={({ field }) => (
-                                          <FormItem className="flex-1">
-                                            <FormControl>
-                                              <div className="relative">
-                                                <Input
-                                                  {...field}
-                                                  placeholder={`Choice ${choiceIndex + 1}`}
-                                                  className={cn(
-                                                    form.watch(
-                                                      `items.${index}.choices.${choiceIndex}.isCorrect`
-                                                    ) &&
-                                                      "border-green-500 focus-visible:ring-green-500"
-                                                  )}
-                                                />
-                                                {form.watch(
-                                                  `items.${index}.choices.${choiceIndex}.isCorrect`
-                                                ) && (
-                                                  <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                    ✅
-                                                  </span>
-                                                )}
-                                              </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                      <RadioGroupItem
-                                        value={choiceIndex.toString()}
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              </RadioGroup>
-                              <p className="text-[0.8rem] font-medium text-destructive">
-                                {
-                                  // prettier-ignore
-                                  form.formState.errors.items?.[index]
-                                  // @ts-expect-error works fine - weird react-hook-form types
-                                    ?.choices?.["choices"]?.message
-                                }
-                              </p>
+                              <FormLabel>Question {index + 1}</FormLabel>
+                              <FormControl>
+                                <Textarea {...field} />
+                              </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
+                        <div className="space-y-3">
+                          <FormLabel>Choices</FormLabel>
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.choices`}
+                            render={() => (
+                              <FormItem>
+                                <RadioGroup
+                                  name={`items.${index}.choices`}
+                                  value={form
+                                    .watch(`items.${index}.choices`)
+                                    ?.findIndex((c) => c?.isCorrect)
+                                    ?.toString()}
+                                  onValueChange={(value) => {
+                                    [0, 1, 2, 3].forEach((i) => {
+                                      form.setValue(
+                                        `items.${index}.choices.${i}.isCorrect`,
+                                        i === parseInt(value)
+                                      );
+                                    });
+                                    // Clear the choices error when a correct answer is selected
+                                    form.clearErrors(`items.${index}.choices`);
+                                  }}
+                                >
+                                  <div className="grid gap-3 sm:grid-cols-2">
+                                    {[0, 1, 2, 3].map((choiceIndex) => (
+                                      <div
+                                        key={`choice.${choiceIndex}`}
+                                        className="flex items-center gap-2"
+                                      >
+                                        <FormField
+                                          control={form.control}
+                                          name={`items.${index}.choices.${choiceIndex}.text`}
+                                          render={({ field }) => (
+                                            <FormItem className="flex-1">
+                                              <FormControl>
+                                                <div className="relative">
+                                                  <Input
+                                                    {...field}
+                                                    placeholder={`Choice ${choiceIndex + 1}`}
+                                                    className={cn(
+                                                      form.watch(
+                                                        `items.${index}.choices.${choiceIndex}.isCorrect`
+                                                      ) &&
+                                                        "border-green-500 focus-visible:ring-green-500"
+                                                    )}
+                                                  />
+                                                  {form.watch(
+                                                    `items.${index}.choices.${choiceIndex}.isCorrect`
+                                                  ) && (
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                      ✅
+                                                    </span>
+                                                  )}
+                                                </div>
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+                                        <RadioGroupItem
+                                          value={choiceIndex.toString()}
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </RadioGroup>
+                                <p className="text-[0.8rem] font-medium text-destructive">
+                                  {
+                                    // prettier-ignore
+                                    form.formState.errors.items?.[index]
+                                  // @ts-expect-error works fine - weird react-hook-form types
+                                    ?.choices?.["choices"]?.message
+                                  }
+                                </p>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
                     </div>
                   ))}
