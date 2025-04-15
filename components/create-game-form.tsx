@@ -1,5 +1,6 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -77,6 +78,16 @@ export function CreateGameForm({
       ...currentItems,
       { question: "", answer: "", points: 1, time_limit: null },
     ]);
+  }
+
+  function removeItem(index: number) {
+    const currentItems = form.getValues("items") || [];
+    // Only allow deletion if there are at least 2 items
+    if (currentItems.length > 1) {
+      const updatedItems = [...currentItems];
+      updatedItems.splice(index, 1);
+      form.setValue("items", updatedItems);
+    }
   }
 
   async function validateStep(step: number) {
@@ -334,85 +345,101 @@ export function CreateGameForm({
             {currentStep === 2 && (
               <div className="space-y-6">
                 {form.watch("items").map((_, index) => (
-                  <div key={index} className="space-y-4 rounded-lg border p-4">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.question`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Question {index + 1}</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="grid grid-cols-4 gap-4">
+                  <div key={index} className="relative rounded-lg border p-4">
+                    {form.watch("items").length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-2"
+                        onClick={() => removeItem(index)}
+                        title="Delete question"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <div className="space-y-4">
                       <FormField
                         control={form.control}
-                        name={`items.${index}.answer`}
+                        name={`items.${index}.question`}
                         render={({ field }) => (
-                          <FormItem className="col-span-2">
-                            <FormLabel>Answer</FormLabel>
+                          <FormItem>
+                            <FormLabel>Question {index + 1}</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Textarea {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.points`}
-                        render={({ field }) => (
-                          <FormItem className="col-span-1">
-                            <FormLabel>Points</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min=""
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value) || 1)
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`items.${index}.time_limit`}
-                        render={({ field }) => (
-                          <FormItem className="col-span-1">
-                            <FormLabel>Time Limit (s)</FormLabel>
-                            <Select
-                              onValueChange={(value) =>
-                                field.onChange(value ? parseInt(value) : null)
-                              }
-                              value={field.value?.toString() || ""}
-                            >
+                      <div className="grid grid-cols-4 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.answer`}
+                          render={({ field }) => (
+                            <FormItem className="col-span-2">
+                              <FormLabel>Answer</FormLabel>
                               <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="No time limit" />
-                                </SelectTrigger>
+                                <Input {...field} />
                               </FormControl>
-                              <SelectContent>
-                                <SelectItem value={null as never}>
-                                  No time limit
-                                </SelectItem>
-                                <SelectItem value="15">15 seconds</SelectItem>
-                                <SelectItem value="30">30 seconds</SelectItem>
-                                <SelectItem value="45">45 seconds</SelectItem>
-                                <SelectItem value="60">60 seconds</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.points`}
+                          render={({ field }) => (
+                            <FormItem className="col-span-1">
+                              <FormLabel>Points</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min=""
+                                  {...field}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      parseInt(e.target.value) || 1
+                                    )
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.time_limit`}
+                          render={({ field }) => (
+                            <FormItem className="col-span-1">
+                              <FormLabel>Time Limit (s)</FormLabel>
+                              <Select
+                                onValueChange={(value) =>
+                                  field.onChange(value ? parseInt(value) : null)
+                                }
+                                value={field.value?.toString() || ""}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="No time limit" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value={null as never}>
+                                    No time limit
+                                  </SelectItem>
+                                  <SelectItem value="15">15 seconds</SelectItem>
+                                  <SelectItem value="30">30 seconds</SelectItem>
+                                  <SelectItem value="45">45 seconds</SelectItem>
+                                  <SelectItem value="60">60 seconds</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}

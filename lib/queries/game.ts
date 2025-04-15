@@ -38,10 +38,14 @@ export async function getGameByIdWithGameItems(
   return data;
 }
 
-export async function getAllGames({ supabase }: QueryConfig) {
+export async function getAllGamesByUserId(
+  { supabase }: QueryConfig,
+  userId: string
+) {
   const { data, error } = await supabase
     .from("games")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) {

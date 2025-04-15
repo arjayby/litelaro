@@ -4,12 +4,12 @@ import Link from "next/link";
 import { GamesList } from "@/components/games-list";
 import { Button } from "@/components/ui/button";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
-import { getAllGames } from "@/lib/queries/game";
+import { getAllGamesByUserId } from "@/lib/queries/game";
 
 export default async function MotivationalGamesPage() {
-  const { supabase } = await getAuthSession();
+  const { user, supabase } = await getAuthSession();
 
-  const games = await getAllGames({ supabase });
+  const games = await getAllGamesByUserId({ supabase }, user.id);
 
   return (
     <div className="container space-y-8 p-8">
