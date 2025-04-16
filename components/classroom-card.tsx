@@ -27,12 +27,14 @@ export function ClassroomCard({
   role,
 }: ClassroomCardProps) {
   return (
-    <Link
-      href={
-        role === "teacher" ? `/classrooms/${id}` : `/dashboard/classrooms/${id}`
-      }
-    >
-      <Card className="transition-colors hover:bg-accent">
+    <Card className="transition-colors hover:bg-accent">
+      <Link
+        href={
+          role === "teacher"
+            ? `/classrooms/${id}`
+            : `/dashboard/classrooms/${id}`
+        }
+      >
         <CardHeader>
           <CardTitle className="line-clamp-1 space-x-2">
             <span>{title}</span>
@@ -70,7 +72,7 @@ export function ClassroomCard({
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

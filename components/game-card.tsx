@@ -28,8 +28,8 @@ export function GameCard({
   totalPlayers = 0,
 }: GameCardProps) {
   return (
-    <Link href={`/motivational-games/${id}`}>
-      <Card className="transition-colors hover:bg-accent">
+    <Card className="transition-colors hover:bg-accent">
+      <Link href={`/motivational-games/${id}`}>
         <CardHeader>
           <CardTitle className="line-clamp-1">{title}</CardTitle>
         </CardHeader>
@@ -74,7 +74,7 @@ export function GameCard({
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

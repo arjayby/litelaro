@@ -23,10 +23,12 @@ export function QuizCard({
   role,
 }: QuizCardProps) {
   return (
-    <Link
-      href={role === "teacher" ? `/quizzes/${id}` : `/dashboard/quizzes/${id}`}
-    >
-      <Card className="transition-colors hover:bg-accent">
+    <Card className="transition-colors hover:bg-accent">
+      <Link
+        href={
+          role === "teacher" ? `/quizzes/${id}` : `/dashboard/quizzes/${id}`
+        }
+      >
         <CardHeader>
           <CardTitle className="line-clamp-1">{title}</CardTitle>
         </CardHeader>
@@ -68,7 +70,7 @@ export function QuizCard({
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

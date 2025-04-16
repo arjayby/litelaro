@@ -11,6 +11,6 @@ export default async function Home() {
   if (profile?.role === "teacher") {
     redirect("/classrooms");
   } else {
-    redirect("/dashboard");
+    redirect("/dashboard/classrooms");
   }
 }
