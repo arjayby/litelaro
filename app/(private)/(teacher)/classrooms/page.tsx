@@ -4,14 +4,12 @@ import Link from "next/link";
 import { ClassroomList } from "@/components/classroom-list";
 import { Button } from "@/components/ui/button";
 import { getAuthSession } from "@/lib/auth/get-auth-session";
+import { getClassroomsByUserId } from "@/lib/queries/classroom";
 
 export default async function ClassroomPage() {
-  const { supabase } = await getAuthSession();
+  const { supabase, user } = await getAuthSession();
 
-  const { data: classrooms } = await supabase
-    .from("classrooms")
-    .select("*, students:classroom_students(count)")
-    .order("created_at", { ascending: false });
+  const classrooms = await getClassroomsByUserId(supabase, user.id);
 
   return (
     <div className="container space-y-8 p-8">
