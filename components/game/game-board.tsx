@@ -4,16 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Tables } from "@/lib/utils/supabase/database.types";
 
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
@@ -285,64 +285,96 @@ export function GameBoard({
           <div
             key={index}
             className={`flex cursor-pointer items-center justify-center rounded-lg text-3xl font-bold shadow-md transition-all hover:shadow-lg ${
-              answeredQuestions.includes(index) ? "" : "hover:scale-105"
+              answeredQuestions.includes(index)
+                ? "cursor-not-allowed opacity-50" // Style answered cards
+                : "hover:scale-105"
             } relative`}
             onClick={() =>
               !answeredQuestions.includes(index) && handleCardSelect(index)
             }
-            style={{ perspective: "1000px", aspectRatio: "2/3" }}
+            style={{ perspective: "1000px", aspectRatio: "2/3" }} // Added perspective here
           >
+            {/* Inner container for flip transformation */}
             <div
-              className={`h-full w-full rounded-lg border ${
-                answeredQuestions.includes(index)
-                  ? "border-muted"
-                  : "border-primary"
-              } absolute flex items-center justify-center transition-all duration-500 ${
-                selectedCard === index && showQuestion
-                  ? "animate-card-flip"
-                  : ""
-              } bg-card p-2 shadow-md`}
-              style={{
-                backfaceVisibility: "hidden",
-                transformStyle: "preserve-3d",
-                borderRadius: "12px",
-                border: "2px solid rgba(255,255,255,0.2)",
-                backgroundImage: answeredQuestions.includes(index)
-                  ? "none"
-                  : "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.3) 5%, transparent 60%)",
-              }}
+              className={`relative h-full w-full transition-transform duration-700 ${
+                selectedCard === index ? "rotate-y-180" : "" // Apply flip rotation
+              }`}
+              style={{ transformStyle: "preserve-3d" }}
             >
-              {answeredQuestions.includes(index) ? (
-                "✓"
-              ) : (
-                <>
-                  <span
-                    className={`absolute left-3 top-2 text-2xl font-medium transition-opacity duration-500 ${
-                      selectedCard === index && showQuestion ? "opacity-0" : ""
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
-                  <span className="text-3xl">{cardEmojis[index]}</span>
-                  <span
-                    className={`absolute bottom-2 right-3 rotate-180 text-2xl font-medium transition-opacity duration-500 ${
-                      selectedCard === index && showQuestion ? "opacity-0" : ""
-                    }`}
-                  >
-                    {index + 1}
-                  </span>
-                </>
-              )}
+              {/* Front Face */}
+              <div
+                className={`absolute flex h-full w-full items-center justify-center rounded-lg border ${
+                  answeredQuestions.includes(index)
+                    ? "border-muted bg-muted/50" // Dim answered cards
+                    : "border-primary bg-card"
+                } p-2 shadow-md`}
+                style={{
+                  backfaceVisibility: "hidden", // Hide back when facing forward
+                  borderRadius: "12px",
+                  border: "2px solid rgba(255,255,255,0.2)",
+                  backgroundImage: answeredQuestions.includes(index)
+                    ? "none"
+                    : "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.3) 5%, transparent 60%)",
+                }}
+              >
+                {answeredQuestions.includes(index) ? (
+                  <span className="text-4xl text-muted-foreground">✔️</span> // Larger checkmark
+                ) : (
+                  <>
+                    <span
+                      className={`absolute left-3 top-2 text-2xl font-medium`}
+                    >
+                      {index + 1}
+                    </span>
+                    <span className="text-4xl">{cardEmojis[index]}</span>
+                    <span
+                      className={`absolute bottom-2 right-3 text-2xl font-medium`}
+                    >
+                      {index + 1}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Back Face (Initially hidden) */}
+              <div
+                className={`absolute flex h-full w-full items-center justify-center rounded-lg border ${
+                  answeredQuestions.includes(index)
+                    ? "border-muted bg-muted/50"
+                    : "border-primary bg-card"
+                } rotate-y-180 p-4 text-center shadow-md`} // Pre-rotated
+                style={{
+                  backfaceVisibility: "hidden", // Hide front when facing backward
+                  borderRadius: "12px",
+                  border: "2px solid rgba(255,255,255,0.2)",
+                }}
+              >
+                {answeredQuestions.includes(index) ? (
+                  <span className="text-4xl text-muted-foreground">✓</span>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-xl font-semibold">
+                      Question {index + 1}
+                    </span>
+                    <span className="text-base">
+                      ({item.points || 1}{" "}
+                      {(item.points || 1) === 1 ? "point" : "points"})
+                    </span>
+                    <span className="mt-2 text-4xl">🤔</span>{" "}
+                    {/* Placeholder icon */}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Question Dialog */}
-      <Dialog open={showQuestion} onOpenChange={setShowQuestion}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
+      {/* Question Dialog (now AlertDialog) */}
+      <AlertDialog open={showQuestion}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center justify-between">
               <span>
                 Question {selectedCard !== null ? selectedCard + 1 : ""}
               </span>
@@ -353,12 +385,12 @@ export function GameBoard({
                   {timeRemaining}s
                 </span>
               )}
-            </DialogTitle>
-            <DialogDescription>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
               {selectedCard !== null &&
                 gameData.game_items[selectedCard].question}
-            </DialogDescription>
-          </DialogHeader>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
           {!showResult ? (
             <>
@@ -379,9 +411,9 @@ export function GameBoard({
                   </span>
                 )}
               </div>
-              <DialogFooter>
+              <AlertDialogFooter>
                 <Button onClick={submitAnswer}>Submit Answer</Button>
-              </DialogFooter>
+              </AlertDialogFooter>
             </>
           ) : (
             <>
@@ -426,17 +458,17 @@ export function GameBoard({
                   )}
                 </div>
               </div>
-              <DialogFooter>
+              <AlertDialogFooter>
                 <Button onClick={nextTurn}>
                   {answeredQuestions.length + 1 >= gameData.game_items.length
                     ? "Finish Game"
                     : "Next Turn"}
                 </Button>
-              </DialogFooter>
+              </AlertDialogFooter>
             </>
           )}
-        </DialogContent>
-      </Dialog>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

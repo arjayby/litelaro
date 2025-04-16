@@ -96,3 +96,10 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  /* Add other custom utilities if needed */
+}
