@@ -20,14 +20,23 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+// choices bugged out, it confuses ts (Json or array of object) for some reason
+// had to make this interface
+interface QuizItem {
+  choices: Array<{
+    text: string;
+    isCorrect: boolean;
+  }>;
+  created_at: string;
+  id: string;
+  question: string;
+  quiz_id: string;
+  updated_at: string;
+}
+
 interface QuizFormProps {
   quiz: Tables<"quizzes"> & {
-    quiz_items: (Tables<"quiz_items"> & {
-      choices: Array<{
-        text: string;
-        isCorrect: boolean;
-      }>;
-    })[];
+    quiz_items: QuizItem[];
   };
   userId: string;
 }
