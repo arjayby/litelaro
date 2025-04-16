@@ -8,6 +8,7 @@ import { Database } from "@/lib/utils/supabase/database.types";
 type Quiz = Database["public"]["Tables"]["quizzes"]["Row"];
 
 interface QuizCardProps extends Quiz {
+  role: "student" | "teacher";
   createdAt: Date;
 }
 
@@ -19,9 +20,12 @@ export function QuizCard({
   difficulty,
   visibility,
   createdAt,
+  role,
 }: QuizCardProps) {
   return (
-    <Link href={`/quizzes/${id}`}>
+    <Link
+      href={role === "teacher" ? `/quizzes/${id}` : `/dashboard/quizzes/${id}`}
+    >
       <Card className="transition-colors hover:bg-accent">
         <CardHeader>
           <CardTitle className="line-clamp-1">{title}</CardTitle>

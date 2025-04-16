@@ -331,6 +331,47 @@ export type Database = {
         }
         Relationships: []
       }
+      student_quiz_attempts: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          quiz_id: string
+          score: number
+          student_id: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          answers: Json
+          created_at?: string
+          id?: string
+          quiz_id: string
+          score: number
+          student_id: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          quiz_id?: string
+          score?: number
+          student_id?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

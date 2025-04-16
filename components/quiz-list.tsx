@@ -22,6 +22,7 @@ export function QuizList({ quizzes }: QuizListProps) {
         <QuizCard
           key={quiz.id}
           {...quiz}
+          role="teacher"
           createdAt={new Date(quiz.created_at)}
         />
       ))}
